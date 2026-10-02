@@ -1,0 +1,6 @@
+{
+  "name": "Tempo Focus - Apple-Inspired Pomodoro Timer",
+  "description": "An ultra-clean, minimalist Pomodoro timer inspired by Apple Human Interface Guidelines with ambient audio, activity rings, and task focus.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

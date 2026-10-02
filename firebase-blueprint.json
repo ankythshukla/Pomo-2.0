@@ -1,0 +1,129 @@
+{
+  "entities": {
+    "UserStats": {
+      "title": "UserStats",
+      "description": "Daily streak and focus time statistics for a user",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The UID of the user"
+        },
+        "date": {
+          "type": "string",
+          "description": "Date format YYYY-MM-DD"
+        },
+        "focusMinutesToday": {
+          "type": "number",
+          "description": "Focus minutes completed today"
+        },
+        "sessionsCompletedToday": {
+          "type": "number",
+          "description": "Sessions completed today"
+        },
+        "streakDays": {
+          "type": "number",
+          "description": "Consecutive days streak"
+        },
+        "updatedAt": {
+          "type": "number",
+          "description": "Timestamp when stats were last updated"
+        }
+      },
+      "required": ["userId", "date", "focusMinutesToday", "sessionsCompletedToday", "streakDays"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "A focus task created by the user",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique task ID"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user UID"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the task",
+          "maxLength": 140
+        },
+        "category": {
+          "type": "string",
+          "description": "Category or tag",
+          "maxLength": 50
+        },
+        "completed": {
+          "type": "boolean",
+          "description": "Whether the task is completed"
+        },
+        "pomodorosSpent": {
+          "type": "number",
+          "description": "Pomodoro sessions spent"
+        },
+        "targetPomodoros": {
+          "type": "number",
+          "description": "Target pomodoros"
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "number",
+          "description": "Timestamp of update"
+        }
+      },
+      "required": ["id", "userId", "title", "completed", "pomodorosSpent", "targetPomodoros", "createdAt"]
+    },
+    "SessionRecord": {
+      "title": "SessionRecord",
+      "description": "Completed pomodoro or break session history log",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Record ID"
+        },
+        "userId": {
+          "type": "string",
+          "description": "User UID"
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when session finished"
+        },
+        "mode": {
+          "type": "string",
+          "description": "Session mode: focus, shortBreak, or longBreak"
+        },
+        "durationMinutes": {
+          "type": "number",
+          "description": "Duration in minutes"
+        },
+        "taskTitle": {
+          "type": "string",
+          "description": "Associated task title if any",
+          "maxLength": 140
+        }
+      },
+      "required": ["id", "userId", "timestamp", "mode", "durationMinutes"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/stats/daily": {
+      "schema": "UserStats",
+      "description": "Stores user daily statistics, focus minutes, and current streak"
+    },
+    "/users/{userId}/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Focus tasks saved for the user"
+    },
+    "/users/{userId}/history/{historyId}": {
+      "schema": "SessionRecord",
+      "description": "Historical log of completed sessions"
+    }
+  }
+}
