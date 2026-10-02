@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Maximize2, Settings, Command, User as UserIcon, LogOut, Flame, Clock, CheckCircle2, ChevronDown } from 'lucide-react';
+import { Maximize2, Settings, Command, User as UserIcon, LogOut, Flame, Clock, CheckCircle2, ChevronDown, Palette, Laptop, Moon, Sun, Sparkles, Trees, Check } from 'lucide-react';
 import { User } from 'firebase/auth';
+import { AppTheme } from '../types';
 import { playTickSound } from '../utils/audio';
 
 export type MainTab = 'timer' | 'tasks' | 'activity';
@@ -18,6 +19,8 @@ interface HeaderProps {
   streakDays: number;
   focusMinutesToday: number;
   savedTasksCount: number;
+  currentTheme: AppTheme;
+  onSelectTheme: (theme: AppTheme) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -33,15 +36,22 @@ export const Header: React.FC<HeaderProps> = ({
   streakDays,
   focusMinutesToday,
   savedTasksCount,
+  currentTheme,
+  onSelectTheme,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const themeMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on click outside
+  // Close dropdowns on click outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setIsMenuOpen(false);
+      }
+      if (themeMenuRef.current && !themeMenuRef.current.contains(e.target as Node)) {
+        setIsThemeMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -75,9 +85,14 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   const firstName = getFirstName();
+  const isLight = currentTheme === 'pure-silver';
 
   return (
-    <header className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 backdrop-blur-xl">
+    <header
+      className={`w-full max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 border-b backdrop-blur-xl transition-colors duration-300 ${
+        isLight ? 'border-neutral-300/80 text-neutral-900' : 'border-white/10 text-white'
+      }`}
+    >
       {/* Zone 1: Brand & Named Greeting */}
       <div className="flex items-center gap-3">
         <a
@@ -86,16 +101,24 @@ export const Header: React.FC<HeaderProps> = ({
             e.preventDefault();
             onSelectTab('timer');
           }}
-          className="text-lg font-semibold tracking-tight text-white hover:opacity-90 transition-opacity"
+          className={`text-lg font-semibold tracking-tight transition-opacity hover:opacity-90 ${
+            isLight ? 'text-neutral-950' : 'text-white'
+          }`}
         >
           Tempo
         </a>
 
         {/* Named greeting display */}
-        <div className="hidden sm:flex items-center gap-1.5 text-xs text-neutral-400 pl-3 border-l border-white/10">
+        <div
+          className={`hidden sm:flex items-center gap-1.5 text-xs pl-3 border-l ${
+            isLight ? 'text-neutral-600 border-neutral-300' : 'text-neutral-400 border-white/10'
+          }`}
+        >
           <span>{getGreeting()}</span>
           {firstName && (
-            <span className="font-medium text-white">, {firstName}</span>
+            <span className={`font-medium ${isLight ? 'text-neutral-900' : 'text-white'}`}>
+              , {firstName}
+            </span>
           )}
         </div>
       </div>
@@ -112,12 +135,22 @@ export const Header: React.FC<HeaderProps> = ({
                 onSelectTab(tab.id);
               }}
               className={`relative py-1 transition-colors ${
-                isActive ? 'text-white font-semibold' : 'text-neutral-400 hover:text-white'
+                isActive
+                  ? isLight
+                    ? 'text-neutral-950 font-semibold'
+                    : 'text-white font-semibold'
+                  : isLight
+                  ? 'text-neutral-500 hover:text-neutral-900'
+                  : 'text-neutral-400 hover:text-white'
               }`}
             >
               {tab.label}
               {isActive && (
-                <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-white rounded-full" />
+                <span
+                  className={`absolute bottom-0 left-0 right-0 h-[2px] rounded-full ${
+                    isLight ? 'bg-neutral-900' : 'bg-white'
+                  }`}
+                />
               )}
             </button>
           );
@@ -216,12 +249,77 @@ export const Header: React.FC<HeaderProps> = ({
               if (soundEnabled) playTickSound(0.25);
               onOpenAuth();
             }}
-            className="flex items-center gap-1.5 py-1.5 px-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-xs font-medium text-white transition-all shadow-sm"
+            className={`flex items-center gap-1.5 py-1.5 px-3 rounded-full border text-xs font-medium transition-all shadow-sm ${
+              isLight
+                ? 'bg-neutral-900/10 hover:bg-neutral-900/20 border-neutral-300 text-neutral-900'
+                : 'bg-white/10 hover:bg-white/20 border-white/15 text-white'
+            }`}
           >
-            <UserIcon className="w-3.5 h-3.5 text-neutral-300" />
+            <UserIcon className={`w-3.5 h-3.5 ${isLight ? 'text-neutral-700' : 'text-neutral-300'}`} />
             <span>Sign In</span>
           </button>
         )}
+
+        {/* Quick Theme Switcher */}
+        <div className="relative" ref={themeMenuRef}>
+          <button
+            onClick={() => {
+              if (soundEnabled) playTickSound(0.2);
+              setIsThemeMenuOpen(!isThemeMenuOpen);
+            }}
+            className={`p-2 rounded-xl border transition-all ${
+              isLight
+                ? 'text-neutral-700 hover:text-neutral-950 bg-neutral-900/5 hover:bg-neutral-900/15 border-neutral-300'
+                : 'text-neutral-300 hover:text-white bg-white/5 hover:bg-white/15 border-white/10'
+            }`}
+            title="Theme Switcher"
+            aria-label="Theme Switcher"
+          >
+            <Palette className="w-4 h-4" />
+          </button>
+
+          {isThemeMenuOpen && (
+            <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-neutral-900/95 border border-white/15 p-3 shadow-2xl backdrop-blur-2xl z-50 animate-in fade-in zoom-in-95 duration-150 text-white">
+              <div className="pb-2 mb-2 border-b border-white/10 flex items-center justify-between px-1">
+                <span className="text-xs font-semibold text-neutral-300">Theme Palette</span>
+                <span className="text-[10px] text-neutral-400">5 Themes</span>
+              </div>
+              <div className="space-y-1">
+                {[
+                  { id: 'dark-glass', label: 'Dark Glass', icon: Laptop, dotBg: 'bg-[#0c0d12]' },
+                  { id: 'midnight-carbon', label: 'Midnight Carbon', icon: Moon, dotBg: 'bg-black' },
+                  { id: 'pure-silver', label: 'Pure Silver', icon: Sun, dotBg: 'bg-[#F5F5F7]' },
+                  { id: 'sunset-aurora', label: 'Sunset Aurora', icon: Sparkles, dotBg: 'bg-[#0e091c]' },
+                  { id: 'emerald-forest', label: 'Emerald Forest', icon: Trees, dotBg: 'bg-[#06140d]' },
+                ].map((t) => {
+                  const Icon = t.icon;
+                  const isSelected = currentTheme === t.id;
+                  return (
+                    <button
+                      key={t.id}
+                      onClick={() => {
+                        if (soundEnabled) playTickSound(0.25);
+                        onSelectTheme(t.id as AppTheme);
+                        setIsThemeMenuOpen(false);
+                      }}
+                      className={`w-full flex items-center justify-between p-2 rounded-xl text-xs transition-colors ${
+                        isSelected
+                          ? 'bg-white/15 text-white font-medium'
+                          : 'text-neutral-400 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className={`w-3.5 h-3.5 rounded-full ${t.dotBg} border border-white/30 shrink-0`} />
+                        <span>{t.label}</span>
+                      </div>
+                      {isSelected && <Check className="w-3.5 h-3.5 text-emerald-400" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Shortcuts */}
         <button
@@ -229,7 +327,11 @@ export const Header: React.FC<HeaderProps> = ({
             if (soundEnabled) playTickSound(0.2);
             onOpenShortcuts();
           }}
-          className="p-2 text-neutral-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors"
+          className={`p-2 rounded-xl transition-colors ${
+            isLight
+              ? 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-900/10'
+              : 'text-neutral-400 hover:text-white hover:bg-white/10'
+          }`}
           title="Keyboard shortcuts (?)"
           aria-label="Keyboard shortcuts"
         >
@@ -242,7 +344,11 @@ export const Header: React.FC<HeaderProps> = ({
             if (soundEnabled) playTickSound(0.2);
             onToggleZen();
           }}
-          className="p-2 text-neutral-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors"
+          className={`p-2 rounded-xl transition-colors ${
+            isLight
+              ? 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-900/10'
+              : 'text-neutral-400 hover:text-white hover:bg-white/10'
+          }`}
           title="Zen Fullscreen Mode (F)"
           aria-label="Zen mode"
         >
@@ -255,7 +361,11 @@ export const Header: React.FC<HeaderProps> = ({
             if (soundEnabled) playTickSound(0.25);
             onOpenSettings();
           }}
-          className="p-2 text-neutral-300 hover:text-white rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition-all"
+          className={`p-2 rounded-xl border transition-all ${
+            isLight
+              ? 'text-neutral-700 hover:text-neutral-950 bg-neutral-900/5 hover:bg-neutral-900/15 border-neutral-300'
+              : 'text-neutral-300 hover:text-white bg-white/5 hover:bg-white/15 border-white/10'
+          }`}
           title="Settings (,)"
           aria-label="Settings"
         >

@@ -495,6 +495,10 @@ export default function App() {
         return 'theme-midnight-carbon bg-black text-neutral-100';
       case 'pure-silver':
         return 'theme-pure-silver bg-[#F5F5F7] text-neutral-900';
+      case 'sunset-aurora':
+        return 'theme-sunset-aurora bg-[#0e091c] text-neutral-100';
+      case 'emerald-forest':
+        return 'theme-emerald-forest bg-[#06140d] text-neutral-100';
       case 'dark-glass':
       default:
         return 'theme-dark-glass bg-[#0c0d12] text-neutral-100';
@@ -507,6 +511,20 @@ export default function App() {
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         {settings.theme === 'pure-silver' ? (
           <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-gradient-to-b from-blue-200/20 via-orange-100/20 to-transparent blur-3xl opacity-70" />
+        ) : settings.theme === 'sunset-aurora' ? (
+          <>
+            <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-gradient-to-b from-pink-600/25 via-purple-600/20 to-transparent blur-[140px]" />
+            <div className="absolute bottom-0 right-10 w-96 h-96 rounded-full bg-amber-600/15 blur-[130px]" />
+          </>
+        ) : settings.theme === 'emerald-forest' ? (
+          <>
+            <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-gradient-to-b from-emerald-600/20 via-teal-600/15 to-transparent blur-[140px]" />
+            <div className="absolute bottom-0 right-10 w-96 h-96 rounded-full bg-lime-600/10 blur-[130px]" />
+          </>
+        ) : settings.theme === 'midnight-carbon' ? (
+          <>
+            <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[800px] h-[480px] rounded-full bg-neutral-800/10 blur-[140px]" />
+          </>
         ) : (
           <>
             <div
@@ -537,6 +555,8 @@ export default function App() {
         streakDays={stats.streakDays}
         focusMinutesToday={stats.focusMinutesToday}
         savedTasksCount={tasks.length}
+        currentTheme={settings.theme}
+        onSelectTheme={(theme) => setSettings((prev) => ({ ...prev, theme }))}
       />
 
       {/* Cloud Sync Toast Notification */}

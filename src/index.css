@@ -31,6 +31,14 @@ input[type="range"]::-webkit-slider-runnable-track {
   background: rgba(0, 0, 0, 0.12);
 }
 
+.theme-sunset-aurora input[type="range"]::-webkit-slider-runnable-track {
+  background: rgba(236, 72, 153, 0.2);
+}
+
+.theme-emerald-forest input[type="range"]::-webkit-slider-runnable-track {
+  background: rgba(16, 185, 129, 0.2);
+}
+
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -68,6 +76,14 @@ input[type="range"]::-webkit-slider-thumb:active {
 
 .theme-pure-silver ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.15);
+}
+
+.theme-sunset-aurora ::-webkit-scrollbar-thumb {
+  background: rgba(192, 132, 252, 0.25);
+}
+
+.theme-emerald-forest ::-webkit-scrollbar-thumb {
+  background: rgba(52, 211, 153, 0.25);
 }
 
 /* Ambient subtle breathing animation for Zen mode */

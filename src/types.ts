@@ -1,6 +1,6 @@
 export type TimerMode = 'focus' | 'shortBreak' | 'longBreak';
 
-export type AppTheme = 'dark-glass' | 'midnight-carbon' | 'pure-silver';
+export type AppTheme = 'dark-glass' | 'midnight-carbon' | 'pure-silver' | 'sunset-aurora' | 'emerald-forest';
 
 export type AmbientSoundType = 'none' | 'rain' | 'white-noise' | 'binaural' | 'deep-drone';
 

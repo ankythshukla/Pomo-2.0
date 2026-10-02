@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Bell, Moon, Sun, Laptop, User as UserIcon, LogOut } from 'lucide-react';
+import { X, Bell, Moon, Sun, Laptop, User as UserIcon, LogOut, Sparkles, Trees } from 'lucide-react';
 import { User } from 'firebase/auth';
 import { AppTheme, PomodoroSettings } from '../types';
 import { playTickSound, playChimeSound } from '../utils/audio';
@@ -42,10 +42,54 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     }
   };
 
-  const themes: { id: AppTheme; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-    { id: 'dark-glass', label: 'Dark Glass', icon: Laptop },
-    { id: 'midnight-carbon', label: 'Midnight', icon: Moon },
-    { id: 'pure-silver', label: 'Silver Light', icon: Sun },
+  const themes: {
+    id: AppTheme;
+    label: string;
+    description: string;
+    icon: React.ComponentType<{ className?: string }>;
+    accentBg: string;
+    borderColor: string;
+  }[] = [
+    {
+      id: 'dark-glass',
+      label: 'Dark Glass',
+      description: 'Translucent dark glass & glowing ambient',
+      icon: Laptop,
+      accentBg: 'bg-[#0c0d12]',
+      borderColor: 'border-blue-500/40',
+    },
+    {
+      id: 'midnight-carbon',
+      label: 'Midnight Carbon',
+      description: 'Pitch black OLED obsidian theme',
+      icon: Moon,
+      accentBg: 'bg-black',
+      borderColor: 'border-neutral-700',
+    },
+    {
+      id: 'pure-silver',
+      label: 'Pure Silver',
+      description: 'Clean Apple-inspired light mode',
+      icon: Sun,
+      accentBg: 'bg-[#F5F5F7]',
+      borderColor: 'border-neutral-300',
+    },
+    {
+      id: 'sunset-aurora',
+      label: 'Sunset Aurora',
+      description: 'Cosmic twilight with magenta & violet glow',
+      icon: Sparkles,
+      accentBg: 'bg-gradient-to-br from-[#0e091c] via-purple-950 to-[#190a2a]',
+      borderColor: 'border-pink-500/40',
+    },
+    {
+      id: 'emerald-forest',
+      label: 'Emerald Forest',
+      description: 'Soothing dark botanical green focus',
+      icon: Trees,
+      accentBg: 'bg-gradient-to-br from-[#06140d] via-emerald-950 to-[#041a10]',
+      borderColor: 'border-emerald-500/40',
+    },
   ];
 
   return (
@@ -322,11 +366,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
         {/* Section 4: Appearance */}
         <div className="mt-6 space-y-4">
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-            Appearance
-          </h4>
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+              Appearance & Theme
+            </h4>
+            <span className="text-xs text-neutral-400">5 Themes Available</span>
+          </div>
 
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {themes.map((t) => {
               const Icon = t.icon;
               const isSelected = settings.theme === t.id;
@@ -334,14 +381,26 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <button
                   key={t.id}
                   onClick={() => update('theme', t.id)}
-                  className={`flex flex-col items-center gap-2 p-3 rounded-2xl border text-center transition-all ${
+                  className={`flex items-center gap-3 p-3 rounded-2xl border text-left transition-all relative overflow-hidden group ${
                     isSelected
-                      ? 'bg-white/15 border-white text-white shadow-sm'
-                      : 'bg-white/5 border-white/5 text-neutral-400 hover:text-white hover:bg-white/10'
+                      ? 'bg-white/15 border-white text-white shadow-lg ring-1 ring-white/30'
+                      : 'bg-white/5 border-white/10 text-neutral-300 hover:text-white hover:bg-white/10 hover:border-white/20'
                   }`}
                 >
-                  <Icon className="w-5 h-5" />
-                  <span className="text-xs font-medium">{t.label}</span>
+                  <div
+                    className={`w-9 h-9 rounded-xl ${t.accentBg} border ${t.borderColor} flex items-center justify-center shrink-0 shadow-inner group-hover:scale-105 transition-transform`}
+                  >
+                    <Icon className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-neutral-300'}`} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold tracking-tight text-white">{t.label}</span>
+                      {isSelected && (
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+                      )}
+                    </div>
+                    <p className="text-[11px] text-neutral-400 truncate mt-0.5">{t.description}</p>
+                  </div>
                 </button>
               );
             })}
